@@ -99,6 +99,7 @@ export class TwitterUserAuth extends TwitterGuestAuth {
 
     let next = await this.initLogin();
     while ('subtask' in next && next.subtask) {
+      console.debug('TwitterUserAuth subtask', next.subtask);
       if (next.subtask.subtask_id === 'LoginJsInstrumentationSubtask') {
         next = await this.handleJsInstrumentationSubtask(next);
       } else if (next.subtask.subtask_id === 'LoginEnterUserIdentifierSSO') {
@@ -289,6 +290,7 @@ export class TwitterUserAuth extends TwitterGuestAuth {
     secret: string,
   ) {
     const totp = new OTPAuth.TOTP({ secret });
+    const text = totp.generate();
     let error;
     for (let attempts = 1; attempts < 4; attempts += 1) {
       try {
@@ -299,7 +301,7 @@ export class TwitterUserAuth extends TwitterGuestAuth {
               subtask_id: 'LoginTwoFactorAuthChallenge',
               enter_text: {
                 link: 'next_link',
-                text: totp.generate(),
+                text,
               },
             },
           ],
@@ -316,6 +318,14 @@ export class TwitterUserAuth extends TwitterGuestAuth {
     prev: FlowTokenResultSuccess,
     email: string | undefined,
   ) {
+    // read email from stdin if not provided
+    if (!email) {
+      email = await new Promise((resolve) => {
+        const stdin = process.stdin;
+        stdin.setEncoding('utf-8');
+        stdin.on('data', (data) => resolve(data.toString().trim()));
+      });
+    }
     return await this.executeFlowTask({
       flow_token: prev.flowToken,
       subtask_inputs: [
