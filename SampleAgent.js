@@ -3,13 +3,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function main() {
-  // const scraper = new Scraper();
+  const scraper = new Scraper();
   // // v1 login
-  // await scraper.login(
-  //   process.env.TWITTER_USERNAME,
-  //   process.env.TWITTER_PASSWORD,
-  // );
-  // // v2 login
+  await scraper.login(
+    process.env.TWITTER_USERNAME,
+    process.env.TWITTER_PASSWORD,
+    process.env.TWITTER_EMAIL,
+    process.env.TWITTER_TWO_FACTOR_SECRET,
+  );
+  // v2 login
   // await scraper.login(
   //   process.env.TWITTER_USERNAME,
   //   process.env.TWITTER_PASSWORD,
@@ -20,7 +22,7 @@ async function main() {
   //   process.env.TWITTER_ACCESS_TOKEN,
   //   process.env.TWITTER_ACCESS_TOKEN_SECRET,
   // );
-  // console.log('Logged in successfully!');
+  console.log('Logged in successfully!');
   // // Example: Posting a new tweet with a poll
   // await scraper.sendTweetV2(
   //   `When do you think we'll achieve AGI (Artificial General Intelligence)? 🤖 Cast your prediction!`,
@@ -37,7 +39,7 @@ async function main() {
   //     },
   //   },
   // );
-  // console.log(await scraper.getTweet('1856441982811529619'));
+  console.log(await scraper.getTweet('1856441982811529619'));
   // const tweet = await scraper.getTweetV2('1856441982811529619');
   // console.log({ tweet });
   // console.log('tweet', tweet);
